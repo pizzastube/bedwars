@@ -8,5 +8,16 @@
     <artifactId>bedwars</artifactId>
     <version>0.1</version>
 
+    <dependencies>
+
+    </dependencies>
+
+    <repositories>
+
+    </repositories>
+
+    <build>
+
+    </build>
 
 </project>
