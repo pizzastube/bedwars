@@ -1,47 +1,36 @@
 package net.pizzastube.bedwars;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import net.pizzastube.bedwars.managers.MongoManager;
+import org.bson.Document;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.net.UnknownHostException;
-import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 public class BedWars extends JavaPlugin {
 
     private static BedWars instance;
     private String prefix = "§7[§bBedWars§7]§f ";
+    private MongoManager mongoManager;
 
     @Override
     public void onEnable() {
+        getServer().getConsoleSender().sendMessage("§eBedWars wird initialisiert...");
+        long start = System.currentTimeMillis();
         instance = this;
         loadDatabase();
         registerCommands();
         registerListener();
+
+        UUID uuid = UUID.randomUUID();
+        Document document = new Document("UUID", uuid).append("Name", uuid.getMostSignificantBits());
+        getMongoManager().getPlayers().insertOne(document);
+
+        getServer().getConsoleSender().sendMessage("§aBedWars in " + (System.currentTimeMillis() - start) + "ms initialisiert.");
     }
 
     private void loadDatabase() {
-        try {
-            //Mongo Connection
-            MongoClient mongoClient = new MongoClient("localhost", 27017);
-
-            //Mongo Authentification
-            DB db = mongoClient.getDB("bedwars");
-            boolean auth = db.authenticate("bedwars-game", "bedwars-game".toCharArray());
-
-            //Mongo Database display
-            List<String> dbs = mongoClient.getDatabaseNames();
-            dbs.forEach(System.out::println);
-
-            //Mongo Collection
-            DBCollection table = db.getCollection("test");
-            Set<String> tables = db.getCollectionNames();
-            tables.forEach(System.out::println);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        this.mongoManager = new MongoManager("127.0.0.1", 27017);
+        this.mongoManager.connect("bedwars-game", "bedwars-game", "bedwars");
     }
 
     private void registerListener() {
@@ -59,5 +48,9 @@ public class BedWars extends JavaPlugin {
 
     public static BedWars getInstance() {
         return instance;
+    }
+
+    public MongoManager getMongoManager() {
+        return mongoManager;
     }
 }
