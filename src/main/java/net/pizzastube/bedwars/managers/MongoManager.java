@@ -1,14 +1,12 @@
 package net.pizzastube.bedwars.managers;
 
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 public class MongoManager {
@@ -32,6 +30,10 @@ public class MongoManager {
         this.database = this.client.getDatabase("bedwars");
         this.games = this.database.getCollection("games");
         this.players = this.database.getCollection("players");
+    }
+
+    public MongoClient getClient() {
+        return client;
     }
 
     public MongoDatabase getDatabase() {

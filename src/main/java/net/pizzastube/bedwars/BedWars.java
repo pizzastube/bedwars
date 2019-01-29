@@ -1,7 +1,11 @@
 package net.pizzastube.bedwars;
 
+import net.pizzastube.bedwars.commands.CreateGameCommand;
+import net.pizzastube.bedwars.listener.PlayerJoinListener;
+import net.pizzastube.bedwars.listener.PlayerQuitListener;
 import net.pizzastube.bedwars.managers.MongoManager;
 import org.bson.Document;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
@@ -34,11 +38,13 @@ public class BedWars extends JavaPlugin {
     }
 
     private void registerListener() {
-
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new PlayerJoinListener(), this);
+        pluginManager.registerEvents(new PlayerQuitListener(), this);
     }
 
     private void registerCommands() {
-
+        getCommand("bedwars").setExecutor(new CreateGameCommand());
     }
 
     @Override
